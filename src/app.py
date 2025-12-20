@@ -81,3 +81,12 @@ def delete_post(post_id):
     db.delete_post(post_id)
     # 删除成功后重定向到首页
     return redirect(url_for("index"))
+
+
+if __name__ == "__main__":
+    app.run(
+        # 开启调试模式，便于开发时自动重载和显示调试信息
+        debug=True,
+        host="0.0.0.0",
+        port=5000
+    )
