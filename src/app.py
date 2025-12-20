@@ -83,10 +83,15 @@ def delete_post(post_id):
     return redirect(url_for("index"))
 
 
-if __name__ == "__main__":
+def run():
+    """启动 Flask 应用"""
     app.run(
         # 开启调试模式，便于开发时自动重载和显示调试信息
         debug=True,
         host="0.0.0.0",
         port=5000
     )
+
+
+if __name__ == "__main__":
+    run()
