@@ -1,6 +1,7 @@
 from flask import Flask, render_template,request, redirect, url_for
 from .database import Database
 from .models import Post
+import markdown
 
 # 创建 Flask 应用实例
 app = Flask(__name__)
@@ -9,6 +10,28 @@ db = Database("blog.db")
 
 # 初始化数据库
 db.create_table()
+
+
+# 定义 Markdown 渲染过滤器
+@app.template_filter('markdown')
+def render_markdown(text):
+    """
+    将 Markdown 文本转换为 HTML
+    使用安全的基本配置，启用常用的 Markdown 功能
+    """
+    # 使用 markdown 库将文本转换为 HTML
+    # 启用常用扩展：代码块、表格、换行等
+    html = markdown.markdown(
+        text,
+        extensions=[
+            'fenced_code',  # 支持围栏代码块 (```)
+            'codehilite',   # 代码高亮
+            'tables',       # 表格支持
+            'nl2br',        # 换行转换为 <br>
+            'toc',          # 目录生成
+        ]
+    )
+    return html
 
 
 @app.route("/")

@@ -18,7 +18,7 @@
     
     <!-- 文章完整内容 -->
     <div class="post-content">
-        {{ post.content }}
+        {{ post.content|markdown|safe }}
     </div>
     
     <!-- 操作按钮区域 -->
