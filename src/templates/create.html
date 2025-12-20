@@ -1,0 +1,31 @@
+<!-- 创建文章模板 -->
+{% extends "base.html" %}
+
+{% block title %}写文章{% endblock %}
+
+{% block content %}
+<div class="create-post">
+    <h2>写新文章</h2>
+    
+    <!-- 创建文章表单 -->
+    <form method="POST">
+        <!-- 标题输入框 -->
+        <div class="form-group">
+            <label for="title">标题：</label>
+            <input type="text" id="title" name="title" required placeholder="请输入文章标题">
+        </div>
+        
+        <!-- 内容输入框 -->
+        <div class="form-group">
+            <label for="content">内容：</label>
+            <textarea id="content" name="content" rows="15" required placeholder="请输入文章内容"></textarea>
+        </div>
+        
+        <!-- 按钮组 -->
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">发布</button>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">取消</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
