@@ -13,4 +13,8 @@ wheels/
 .vscode/
 .claude/
 
+# copilot instructions
 .github/copilot-instructions.md
+
+# Claude Code instructions
+CLAUDE.md

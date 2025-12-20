@@ -10,8 +10,8 @@ class Database:
         """构造函数，初始化数据库连接"""
         # 获取数据库文件路径
         self.db_path = db_path
-        # 创建数据库连接
-        self.conn = sqlite3.connect(db_path)
+        # 创建数据库连接，允许在多线程中使用
+        self.conn = sqlite3.connect(db_path, check_same_thread=False)
         # 创建游标对象
         self.cursor = self.conn.cursor()
 
