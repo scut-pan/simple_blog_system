@@ -18,3 +18,6 @@ wheels/
 
 # Claude Code instructions
 CLAUDE.md
+
+# SQLite database file
+blog.db
