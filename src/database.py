@@ -1,5 +1,5 @@
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timezone
 from .models import Post
 
 
@@ -35,11 +35,12 @@ class Database:
     def create_post(self, title, content):
         """创建新文章(加入错误处理)"""
         try:
-            # 让数据库自动设置时间戳
+            # 使用 UTC 时间创建时间戳
+            utc_now = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
             sql = """
-            INSERT INTO posts (title, content) VALUES (?, ?)
+            INSERT INTO posts (title, content, created_at, updated_at) VALUES (?, ?, ?, ?)
             """
-            self.cursor.execute(sql, (title, content))
+            self.cursor.execute(sql, (title, content, utc_now, utc_now))
             self.conn.commit()
             # 获取插入数据的 ID
             last_id = self.cursor.lastrowid
@@ -68,10 +69,9 @@ class Database:
                 id=row[0],
                 title=row[1],
                 content=row[2],
-                # 字符串转 datetime 对象
-                # datetime.strptime('2025-12-20 10:00:00', '%Y-%m-%d %H:%M:%S')
-                created_at=datetime.strptime(row[3], '%Y-%m-%d %H:%M:%S'),
-                updated_at=datetime.strptime(row[4], '%Y-%m-%d %H:%M:%S')
+                # 将字符串转换为带 UTC 时区的 datetime 对象
+                created_at=datetime.strptime(row[3], '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.utc),
+                updated_at=datetime.strptime(row[4], '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.utc)
             )
             posts.append(post)
         return posts
@@ -91,8 +91,9 @@ class Database:
                 id=result[0],
                 title=result[1],
                 content=result[2],
-                created_at=datetime.strptime(result[3], '%Y-%m-%d %H:%M:%S'),
-                updated_at=datetime.strptime(result[4], '%Y-%m-%d %H:%M:%S')
+                # 将字符串转换为带 UTC 时区的 datetime 对象
+                created_at=datetime.strptime(result[3], '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.utc),
+                updated_at=datetime.strptime(result[4], '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.utc)
             )
         else:
             post = None
@@ -101,13 +102,12 @@ class Database:
     
     def update_post(self, post_id, title, content):
         """更新文章"""
-        # 让数据库自动设置时间戳
-        # SQLite 的 DEFAULT CURRENT_TIMESTAMP 只在 INSERT 时生效
-        # UPDATE 时不会自动更新
+        # 使用 UTC 时间更新时间戳
+        utc_now = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
         sql = """
-        UPDATE posts SET title=?, content=?, updated_at=CURRENT_TIMESTAMP WHERE id=?
+        UPDATE posts SET title=?, content=?, updated_at=? WHERE id=?
         """
-        self.cursor.execute(sql, (title, content, post_id))
+        self.cursor.execute(sql, (title, content, utc_now, post_id))
         self.conn.commit()
         # 获取受影响的行数
         affected_rows = self.cursor.rowcount

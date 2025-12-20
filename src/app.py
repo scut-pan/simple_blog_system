@@ -2,6 +2,7 @@ from flask import Flask, render_template,request, redirect, url_for
 from .database import Database
 from .models import Post
 import markdown
+from datetime import timezone
 
 # 创建 Flask 应用实例
 app = Flask(__name__)
@@ -32,6 +33,26 @@ def render_markdown(text):
         ]
     )
     return html
+
+
+# 定义时区转换过滤器
+@app.template_filter('localtime')
+def convert_to_localtime(utc_datetime):
+    """
+    将 UTC 时间转换为本地时间
+    """
+    if utc_datetime is None:
+        return ""
+
+    # 如果 datetime 对象没有时区信息，假设它是 UTC 时间
+    if utc_datetime.tzinfo is None:
+        utc_datetime = utc_datetime.replace(tzinfo=timezone.utc)
+
+    # 转换为本地时间
+    local_datetime = utc_datetime.astimezone()
+
+    # 格式化为字符串
+    return local_datetime.strftime('%Y-%m-%d %H:%M:%S')
 
 
 @app.route("/")
