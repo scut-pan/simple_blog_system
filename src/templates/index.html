@@ -1,0 +1,50 @@
+<!-- 创建首页模板 -->
+{% extends "base.html" %}
+
+{% block title %}首页{% endblock %}
+
+{% block content %}
+<h2>欢迎来到我的博客</h2>
+
+<!-- 检查是否有文章 -->
+{% if posts %}
+    <div class="posts-list">
+        <!-- 遍历所有文章 -->
+        {% for post in posts %}
+        <article class="post-item">
+            <h3>
+                <!-- 文章标题链接到文章详情页 -->
+                <a href="{{ url_for('view_post', post_id=post.id) }}">{{ post.title }}</a>
+            </h3>
+            <div class="post-meta">
+                <span class="post-date">发布时间: {{ post.created_at }}</span>
+                {% if post.updated_at != post.created_at %}
+                <span class="post-updated">更新时间: {{ post.updated_at }}</span>
+                {% endif %}
+            </div>
+            <!-- 显示文章内容的前150个字符作为摘要 -->
+            <p class="post-excerpt">
+                {% if post.content|length > 150 %}
+                    {{ post.content[:150] }}...
+                {% else %}
+                    {{ post.content }}
+                {% endif %}
+            </p>
+            <div class="post-actions">
+                <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn">阅读全文</a>
+                <a href="{{ url_for('edit_post', post_id=post.id) }}" class="btn btn-edit">编辑</a>
+                <!-- 删除按钮使用表单提交 POST 请求 -->
+                <form action="{{ url_for('delete_post', post_id=post.id) }}" method="POST" style="display: inline;" onsubmit="return confirm('确定要删除这篇文章吗？');">
+                    <button type="submit" class="btn btn-delete">删除</button>
+                </form>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+{% else %}
+    <!-- 没有文章时显示提示信息 -->
+    <div class="no-posts">
+        <p>还没有文章，<a href="{{ url_for('create_post') }}">写第一篇文章</a>吧！</p>
+    </div>
+{% endif %}
+{% endblock %}
