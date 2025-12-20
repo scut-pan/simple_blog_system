@@ -1,0 +1,31 @@
+<!-- 编辑文章模板 -->
+{% extends "base.html" %}
+
+{% block title %}编辑文章{% endblock %}
+
+{% block content %}
+<div class="edit-post">
+    <h2>编辑文章</h2>
+    
+    <!-- 编辑文章表单 -->
+    <form method="POST">
+        <!-- 标题输入框，预填充现有标题 -->
+        <div class="form-group">
+            <label for="title">标题：</label>
+            <input type="text" id="title" name="title" value="{{ post.title }}" required placeholder="请输入文章标题">
+        </div>
+        
+        <!-- 内容输入框，预填充现有内容 -->
+        <div class="form-group">
+            <label for="content">内容：</label>
+            <textarea id="content" name="content" rows="15" required placeholder="请输入文章内容">{{ post.content }}</textarea>
+        </div>
+        
+        <!-- 按钮组 -->
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">保存</button>
+            <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-secondary">取消</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
